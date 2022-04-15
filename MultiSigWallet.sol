@@ -61,22 +61,28 @@ contract MultiSigWallet {
     
         //owner requirements
         require(_owners.length > 0, "owners required");
-        require(
-            _required > 0 && _required <= owners.length, "not enough owners"
-        );
+        require(_required > 0 && _required <= _owners.length, "not enough owners");
 
-		//iterate through _owners array and push to "owner"
+		//verify integrity of the array given to the constructor
         for (uint i; i < owners.length; i++) {
             address owner = _owners[i];
+            //prevent repeats
             require(owner != address(0), "invalid owner");
             require(!isOwner[owner], "owner is not unique");
 
+            //push to owners array
             isOwner[owner] = true;
             owners.push(owner);
 
             required = _required;
         }
     }
+
+    //constructor(address[] memory _owners, uint _required) {
+        //owners = _owners;
+        //owners.push(msg.sender); 
+        //required = _required;
+    //}
 
 	//receive funds in the wallet
     receive() external payable {
